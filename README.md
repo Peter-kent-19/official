@@ -1,2 +1,2 @@
 # official
-Portfolio to for reaching out to me for any request for a job or report on any issues
+Portfolio Specially made for Reaching out to me for any Project Deals or reporting issues directly to me
