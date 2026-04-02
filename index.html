@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <title></title>
+   <link rel="stylesheet" href="styles/style.css">
+</head>
+<body>
+   
+   <div class="header">
+      <div class="moto">Building Business Utilities</div>
+   </div>
+   <div class="profile">
+      <div class="img">
+         <img src="/images/FB_IMG_17208192070663232.jpg" alt="" class="fil">
+      </div>
+      <div class="name">Peter Kent (Kentrix Tech)<span>Software Developer</span></div>
+   </div>
+   
+   <div class="engine">
+      <input type="email" id="emailInput" placeholder="Enter an Email here...">
+      <button id="submitBtn">Submit Now</button>
+      
+      <p id="result">Testing Backend Skill 😀</p>
+   </div>
+
+   
+   <div class="bio">
+      <div class="bioSection">
+         <div class="hd">About Me 🙎🏼‍♂️</div>
+         <div class="txt">
+            I'm <b><i>Odo Peter Chinedu,</i></b> A Software Developer with 4 years Experience in coding. I build and develop Web Apps <br> 
+            I live in Enugu State</div>
+      </div>
+      <div class="bioSection">
+         <div class="hd">My Mission 🕵️</div>
+         <div class="txt">
+            With Great Inspiration, I develop Tools that helps Businesses in Goods or Services Management <br>
+            I Greatly value your Engagement. Just Drop Message
+         </div>
+      </div>
+   </div>
+
+   <div class="hdd">My Offers <span>What I'm Building ?</span></div>
+   <div class="offers">
+      <div class="offer">
+         <div class="hd">Inventory System</div>
+         <div class="txt">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolores, velit.</div>
+      </div>
+      <div class="offer">
+         <div class="hd">Sales Tracker</div>
+         <div class="txt">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolores, velit.</div>
+      </div>
+      <div class="offer">
+         <div class="hd">Business Management System</div>
+         <div class="txt">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolores, velit.</div>
+      </div>
+   </div>
+   
+   
+   <div class="projects">
+      <div class="hdd">Projects <span>My Previous Completed Projects 🚀 </span></div>
+      <div class="projs">
+         <div class="proj">
+            <div class="img">
+               <img class="fil" src="/images/Screenshot_20260323-074650.png" alt="" />
+            </div>
+            <div class="desc">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Tempore, vero!</div>
+            <a href="">View Demo</a>
+         </div>
+         <div class="proj">
+            <div class="img">
+               <img src="/images/Screenshot_20260319-003842.png" alt="" class="fil">
+            </div>
+            <div class="desc">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet, enim.</div>
+            <a href="">View Demo</a>
+         </div>
+      </div>
+   </div>
+   
+   
+   <div class="hddd">Contact Me</div>
+   <div class="contacts">
+      <a class="contact" href="#">
+         <div class="logo"><span class="iconoir__whatsapp"></span></div>
+         <div class="name">WhatsApp</div>
+         <span class="txt">Make Request or Report an issue</span>
+         <div class="number">07073053046</div>
+      </a>
+      <a class="contact" href="#">
+         <div class="logo"><span class="ep__phone"></span></div>
+         <div class="name">Phone/Call</div>
+         <span class="txt">Let's have a realtime talk</span>
+         <div class="number">08087539914</div>
+      </a>
+      <a class="contact" href="#">
+         <div class="logo"><span class="basil__gmail_outline"></span></div>
+         <div class="name">Email</div>
+         <span class="txt">Send mail directly</span>
+         <div class="number">peterchinedu2005@gmail.com</div>
+      </a>
+   </div>
+   
+   
+   
+   
+   <script type="module">
+      // 1. IMPORTS (always first)
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
+      import { getFirestore, doc, getDoc, setDoc, updateDoc }
+      from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+
+      // 2. CONFIG
+      const firebaseConfig = {
+         apiKey: "AIzaSyBBcOb__6HF6PVoQii2F9zHA96R_R3XqV8",
+         authDomain: "peter-9b828.firebaseapp.com",
+         projectId: "peter-9b828",
+         storageBucket: "peter-9b828.firebasestorage.app",
+         messagingSenderId: "162297080045",
+         appId: "1:162297080045:web:9ee8b9125c43a2a41284e4",
+      };
+      
+      // 3. INITIALIZE APP
+      const app = initializeApp(firebaseConfig);
+      
+      // 4. INITIALIZE FIRESTORE (THIS is the answer)
+      const db = getFirestore(app);
+      
+      // 5. YOUR LOGIC STARTS HERE
+      const emailInput = document.getElementById("emailInput");
+      const submitBtn = document.getElementById("submitBtn");
+      const result = document.getElementById("result");
+      
+      submitBtn.addEventListener("click", async () => {
+        result.innerHTML = `<span class="svg_spinner"></span>`;
+
+        const email = emailInput.value.trim();
+      
+        if (!email) {
+          result.textContent = "Enter a valid email";
+          return;
+        }
+      
+        const emailRef = doc(db, "emails", email);
+      
+        try {
+          // 🔍 STEP 1: Retrieve the email document
+          const docSnap = await getDoc(emailRef);
+      
+          if (docSnap.exists()) {
+            const data = docSnap.data();
+      
+            // 👉 You are now officially "retrieving"
+            const currentCount = data.count;
+      
+            // 🔄 STEP 2: Update it
+            const newCount = currentCount + 1;
+      
+            await updateDoc(emailRef, {
+              count: newCount
+            });
+      
+            // 🎯 STEP 3: Show result
+            
+            result.textContent = `Welcome back 😎 — submitted ${newCount} times`;
+      
+          } else {
+            // 🆕 First time → create
+            await setDoc(emailRef, {
+              email: email,
+              count: 1
+            });
+      
+            result.textContent = "First time submission 🎉 Submit the same email again to see submitted times 😎";
+          }
+      
+        } catch (error) {
+          console.error(error);
+          result.textContent = "Something went wrong";
+        }
+      });
+   </script>
+   
+   
+   <!--script type="module">
+      /*
+      // Import the functions you need from the SDKs you need
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
+      import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-analytics.js";
+      // TODO: Add SDKs for Firebase products that you want to use
+      // https://firebase.google.com/docs/web/setup#available-libraries
+      
+      // Your web app's Firebase configuration
+      // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+      const firebaseConfig = {
+         apiKey: "AIzaSyBBcOb__6HF6PVoQii2F9zHA96R_R3XqV8",
+         authDomain: "peter-9b828.firebaseapp.com",
+         projectId: "peter-9b828",
+         storageBucket: "peter-9b828.firebasestorage.app",
+         messagingSenderId: "162297080045",
+         appId: "1:162297080045:web:c233106d7209c0651284e4",
+         measurementId: "G-FZ3VY0K9YF"
+      };
+      
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const analytics = getAnalytics(app);
+      */
+      
+      
+
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+      import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+      
+      const firebaseConfig = {
+         apiKey: "AIzaSyBBcOb__6HF6PVoQii2F9zHA96R_R3XqV8",
+         authDomain: "peter-9b828.firebaseapp.com",
+         projectId: "peter-9b828",
+         storageBucket: "peter-9b828.firebasestorage.app",
+         messagingSenderId: "162297080045",
+         appId: "1:162297080045:web:c233106d7209c0651284e4",
+      };
+      
+      const app = initializeApp(firebaseConfig);
+      export const db = getFirestore(app);
+   </script>
+   <script>
+      import { db } from "./firebase.js";
+      import { collection, addDoc, query, where, getDocs }
+      from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+      
+      const input = document.getElementById("email");
+      const btn = document.getElementById("submit");
+      const msg = document.getElementById("message");
+      
+      btn.addEventListener("click", async () => {
+         const email = input.value.trim();
+         
+         if (!email) {
+            msg.textContent = "Enter email";
+            return;
+         }
+         
+         // check existing emails
+         const q = query(collection(db, "emails"), where("email", "==", email));
+         const snapshot = await getDocs(q);
+         
+         const count = snapshot.size;
+         
+         // store email
+         await addDoc(collection(db, "emails"), {
+            email: email,
+            createdAt: new Date()
+         });
+         
+         msg.textContent = `Success! This email has been used ${count} times before.`;
+      });
+   </script-->
+</body>
+</html>
